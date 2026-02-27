@@ -1,8 +1,32 @@
+<div align="center">
+
 # MineLab
 
-**Librería integral de ingeniería minera y metalúrgica para Python.**
+### La caja de herramientas que todo ingeniero de minas merece tener en Python.
 
-MineLab proporciona herramientas de cálculo para todas las disciplinas de la ingeniería de minas: geoestadística, planeamiento minero, geomecánica, procesamiento de minerales, perforación y voladura, ventilación, economía minera, medio ambiente y más.
+[![PyPI](https://img.shields.io/pypi/v/minelab?color=blue&label=PyPI)](https://pypi.org/project/minelab/)
+[![Python](https://img.shields.io/pypi/pyversions/minelab)](https://pypi.org/project/minelab/)
+[![Tests](https://img.shields.io/github/actions/workflow/status/argenismarin/minelab/ci.yml?label=tests)](https://github.com/argenismarin/minelab/actions)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+</div>
+
+---
+
+## ¿Qué es MineLab?
+
+MineLab nació de una convicción simple: **los cálculos que hacemos los ingenieros de minas merecen algo mejor que hojas de cálculo desordenadas, scripts sueltos y fórmulas copiadas a mano.**
+
+Soy Ingeniero de Minas y Metalurgia, y también un entusiasta de la programación. MineLab es la librería que me habría gustado tener desde el primer día de carrera — un solo lugar donde encontrar las fórmulas de Bieniawski, los modelos de Kuz-Ram, el kriging ordinario, el análisis de NPV, el diseño de flotación, y cientos de herramientas más, todas validadas, documentadas y listas para usar.
+
+**Los números que respaldan esta v0.1.0:**
+
+- **388 funciones** cubriendo 16 módulos de ingeniería minera
+- **897 tests** con **94% de cobertura** de código
+- Cada función incluye **referencias bibliográficas** a las fórmulas originales
+- Compatible con **Python 3.10 – 3.13**
+
+---
 
 ## Instalación
 
@@ -10,45 +34,48 @@ MineLab proporciona herramientas de cálculo para todas las disciplinas de la in
 pip install minelab
 ```
 
-Para desarrollo:
-
-```bash
-git clone https://github.com/minelab/minelab.git
-cd minelab
-py -m uv sync --extra dev
-```
+---
 
 ## Inicio Rápido
 
 ```python
 import minelab as ml
 
-# Calcular NPV de un proyecto minero
-resultado = ml.npv(rate=0.10, cashflows=[-100_000, 30_000, 35_000, 40_000, 45_000])
-print(f"NPV: ${resultado:,.0f}")
+# --- Economía minera ---
+van = ml.npv(rate=0.10, cashflows=[-100_000, 30_000, 35_000, 40_000, 45_000])
+print(f"VAN del proyecto: ${van:,.0f}")
 
-# Clasificación de macizo rocoso
+# --- Geomecánica: clasificación de macizo rocoso ---
 rmr = ml.rmr_bieniawski(
     ucs_rating=12, rqd_rating=17, spacing_rating=10,
     condition_rating=20, groundwater_rating=10, orientation_adj=-5,
 )
-print(f"RMR: {rmr}")
+print(f"RMR89: {rmr}")
 
-# Ensayo de bombeo — Theis
-descenso = ml.theis_drawdown(Q=500, T=150, S=0.001, r=50, t=1)
-print(f"Descenso: {descenso:.2f} m")
+# --- Geoestadística: variograma experimental ---
+from minelab.geostatistics import experimental_variogram
+lags, gamma = experimental_variogram(
+    coordinates=coords, values=grades, n_lags=15, lag_size=50.0
+)
 
-# Diseño de caserón subterráneo
-estabilidad = ml.mathews_stability(q_prime=8, a=0.8, b=0.3, c=4)
-print(f"N' = {estabilidad['n_prime']:.1f} → {estabilidad['stability_zone']}")
+# --- Procesamiento de minerales: recuperación por flotación ---
+rec = ml.flotation_recovery(feed_grade=1.2, concentrate_grade=28.0, tail_grade=0.15)
+print(f"Recuperación: {rec:.1f}%")
+
+# --- Perforación y voladura: fragmentación Kuz-Ram ---
+x50 = ml.kuz_ram_x50(powder_factor=0.5, rock_factor=8.0, charge_weight=150.0)
+print(f"Fragmentación media (x50): {x50:.1f} cm")
 ```
 
 También puedes importar desde submódulos específicos:
 
 ```python
-from minelab.economics import npv, irr, tornado_analysis
+from minelab.economics import npv, irr, monte_carlo_simulation
 from minelab.geostatistics import ordinary_kriging, experimental_variogram
+from minelab.geomechanics import hoek_brown_failure, rmr_bieniawski
 ```
+
+---
 
 ## Módulos
 
@@ -70,6 +97,33 @@ from minelab.geostatistics import ordinary_kriging, experimental_variogram
 | `underground_mining` | Caserones, convergencia-confinamiento, room & pillar, relleno |
 | `hydrogeology` | Ensayos de acuífero, desaguado de rajo, química de aguas |
 | `surveying` | Volumetría, coordenadas UTM, topografía de tronaduras |
+
+---
+
+## Esto es solo el comienzo
+
+MineLab v0.1.0 es la **primera versión pública** — la primera piedra de algo mucho más grande. En el camino vienen:
+
+- Más funciones y módulos especializados
+- Documentación completa con tutoriales en español
+- Ejemplos con datos reales de la industria
+- Integración con flujos de trabajo geomineros
+
+**¿Quieres contribuir?** Toda ayuda es bienvenida: reporta bugs, sugiere funciones, o envía un pull request. Este proyecto se construye mejor en comunidad.
+
+- [Reportar un issue](https://github.com/argenismarin/minelab/issues)
+- [Ver el código fuente](https://github.com/argenismarin/minelab)
+
+---
+
+## Autor
+
+**Argenis Marin** — Ingeniero de Minas y Metalurgia, entusiasta de la programación y la automatización aplicada a la minería.
+
+[![GitHub](https://img.shields.io/badge/GitHub-argenismarin-181717?logo=github)](https://github.com/argenismarin)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Argenis%20Marin-0A66C2?logo=linkedin)](https://www.linkedin.com/in/argenismarin/)
+
+---
 
 ## Requisitos
 
